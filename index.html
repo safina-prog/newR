@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Shop</title>
+    <link rel="stylesheet" href="/mycss/default.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="/mycss/file.css">
+    <style>
+        .container {
+            margin-top: 20px;
+        }
+        .cart-summary {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Магаз</a>
+        </div>
+    </nav>    
+
+    <div class="container">
+        <!-- Карточки -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <img class="card-img-top" src="/img/огур.jpg" alt="Огурцы" style="width: 20em;" style="height: 20em;">
+                    <div class="card-body">
+                        <h5 class="card-title">Огурцы</h5>
+                        <p class="card-text">Цена: 50 руб/кг</p>
+                        <div class="d-flex justify-content-between">
+                            <button class="btn btn-primary" onclick="addToCart('cucumber', 50, this)">Add</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <img class="card-img-top" src="/img/tomato.jpg" alt="Помидоры" style="width: 20em;" style="height: 20em;">
+                    <div class="card-body">
+                        <h5 class="card-title">Помидоры</h5>
+                        <p class="card-text">Цена: 70 руб/кг</p>
+                        <div class="d-flex justify-content-between">
+                            <button class="btn btn-primary" onclick="addToCart('tomato', 70, this)">Add</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Корзина -->
+        <div class="cart-summary">
+            <p>Общая масса: <span id="total-weight">0</span> кг</p>
+            <p>К оплате: <span id="total-price">0</span> руб</p>
+        </div>
+    </div>
+
+    <script>
+        const cart = {
+            cucumber: { weight: 0, pricePerKg: 50 },
+            tomato: { weight: 0, pricePerKg: 70 },
+        };
+
+        function addToCart(product, pricePerKg, button) {
+            if (cart[product].weight === 0) {
+                cart[product].pricePerKg = pricePerKg;
+                cart[product].weight = 1;
+                button.outerHTML = `
+                    <div class="d-flex justify-content-between align-items-center">
+                        <button class="btn btn-danger btn-sm" onclick="updateWeight('${product}', -1)">-</button>
+                        <span id="${product}-weight">1</span> кг
+                        <button class="btn btn-success btn-sm" onclick="updateWeight('${product}', 1)">+</button>
+                    </div>`;
+            }
+            updateCartSummary();
+        }
+
+        function updateWeight(product, change) {
+            cart[product].weight = Math.max(cart[product].weight + change, 0);
+            document.getElementById(`${product}-weight`).textContent = cart[product].weight;
+            updateCartSummary();
+        }
+
+        function updateCartSummary() {
+            let totalWeight = 0;
+            let totalPrice = 0;
+
+            for (const product in cart) {
+                totalWeight += cart[product].weight;
+                totalPrice += cart[product].weight * cart[product].pricePerKg;
+            }
+
+            document.getElementById("total-weight").textContent = totalWeight;
+            document.getElementById("total-price").textContent = totalPrice;
+        }
+    </script>
+</body>
+</html>
